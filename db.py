@@ -55,3 +55,90 @@ def fetch_order(order_id: str):
             cursor.close()
         if connection and connection.is_connected():
             connection.close()
+
+def update_order_status(order_id: str, status: str) -> bool:
+    connection = get_connection()
+
+    try:
+        cursor = connection.cursor()
+
+        query = """
+            UPDATE orders
+            SET status = %s
+            WHERE order_id = %s
+        """
+
+        cursor.execute(query, (status, order_id))
+        connection.commit()
+
+        return cursor.rowcount > 0
+
+    except Exception:
+        connection.rollback()
+        raise
+
+def update_refund_status(order_id: str, eligible: bool) -> bool:
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        query = """
+            UPDATE orders
+            SET eligible_for_refund = %s
+            WHERE order_id = %s
+        """
+
+        cursor.execute(query, (eligible, order_id))
+        connection.commit()
+
+        return cursor.rowcount > 0
+
+    except Exception:
+        if connection and connection.is_connected():
+            connection.rollback()
+        raise
+
+    finally:
+        if cursor:
+            cursor.close()
+
+        if connection and connection.is_connected():
+            connection.close()
+
+def insert_ticket(order_id: str, issue: str):
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        query = """
+            INSERT INTO tickets (order_id, issue)
+            VALUES (%s, %s)
+        """
+
+        cursor.execute(query, (order_id, issue))
+        connection.commit()
+
+        return {
+            "ticket_id": cursor.lastrowid,
+            "order_id": order_id,
+            "issue": issue,
+            "status": "open",
+        }
+
+    except Exception:
+        if connection and connection.is_connected():
+            connection.rollback()
+        raise
+
+    finally:
+        if cursor:
+            cursor.close()
+
+        if connection and connection.is_connected():
+            connection.close()

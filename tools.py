@@ -1,9 +1,9 @@
 from langchain.tools import tool
-from db import fetch_order
+from db import fetch_order ,update_order_status ,update_refund_status , insert_ticket
 
 @tool
 def get_order(order_id: str) -> dict:
-    """Get order details using the order ID."""
+    """Get order details using the order ID"""
 
     order = fetch_order(order_id)
 
@@ -34,7 +34,7 @@ def get_order(order_id:str) -> dict:
 
 @tool
 def check_shipping(order_id:str) -> dict:
-    """Check shipping status and expected delivery date."""
+    """Check shipping status and expected delivery date"""
     order = fetch_order(order_id)
     if order is None:
         return{"error":"order not found"}
@@ -43,10 +43,10 @@ def check_shipping(order_id:str) -> dict:
         "shipping_status": order['shipping_status'],
         "expected_delivery" : order['expected_delivery'],
     }
-
+"""
 @tool
 def cancel_order(order_id:str) -> dict:
-    """Cancel an order if it has not been shipped."""
+    Cancel an order if it has not been shipped
     order = fetch_order(order_id)
     if order is None:
         return{"succes":False , "error":"order not found"}
@@ -61,39 +61,91 @@ def cancel_order(order_id:str) -> dict:
         "order_id":order_id,
         "error":"order cancelled"
     }
+"""
 
 @tool
-def refund_order(order_id:str) -> dict:
-    """Refund an order if it is eligible."""
+def cancel_order(order_id: str) -> dict:
+    """Cancel an order if it has not been shipped"""
+
     order = fetch_order(order_id)
 
     if order is None:
-        return{
-            "error":"order not found"
+        return {
+            "success": False,
+            "error": "Order not found",
         }
+
+    if order["status"] != "processing":
+        return {
+            "success": False,
+            "error": "Order cannot be cancelled",
+        }
+
+    updated = update_order_status(order_id, "cancelled")
+
+    if not updated:
+        return {
+            "success": False,
+            "error": "Failed to cancel order",
+        }
+
+    return {
+        "success": True,
+        "order_id": order_id,
+        "message": "Order cancelled successfully",
+    }
+
+
+@tool
+def refund_order(order_id: str) -> dict:
+    """Refund an order if it is eligible."""
+
+    order = fetch_order(order_id)
+
+    if order is None:
+        return {
+            "success": False,
+            "error": "Order not found",
+        }
+
     if not order["eligible_for_refund"]:
-        return{
-            "success":False,
-            "error":"Order is not eligible for refund"
+        return {
+            "success": False,
+            "error": "Order is not eligible for refund",
         }
-    order["eligible_for_refund"] = False
-    return{
-        "succes":True,
-        "order_id":order_id,
-        "refund_amount": order["total"]
+
+    updated = update_refund_status(order_id, False)
+
+    if not updated:
+        return {
+            "success": False,
+            "error": "Failed to process refund",
+        }
+
+    return {
+        "success": True,
+        "order_id": order_id,
+        "refund_amount": order["total"],
+        "currency": order["currency"],
+        "message": "Refund processed successfully",
     }
 
 @tool
 def create_ticket(order_id: str, issue: str) -> dict:
     """Create a support ticket for an unresolved issue."""
 
-    ticket = {
-        "ticket_id": f"T-{len(TICKETS) + 1:03d}",
-        "order_id": order_id,
-        "issue": issue,
-        "status": "open"
+    order = fetch_order(order_id)
+
+    if order is None:
+        return {
+            "success": False,
+            "error": "Order not found",
+            "order_id": order_id,
+        }
+
+    ticket = insert_ticket(order_id, issue)
+
+    return {
+        "success": True,
+        **ticket,
     }
-
-    TICKETS.append(ticket)
-
-    return ticket
