@@ -9,7 +9,7 @@ GOOGLE_API_KEY= st.secrets["GOOGLE_API_KEY"]
 model = ChatGoogleGenerativeAI(
     model="gemini-3.1-flash-lite",
     temperature=0,
-    googgle_api_key=GOOGLE_API_KEY
+    google_api_key=GOOGLE_API_KEY
 )
 system_prompt = """
 You are a customer support agent.
