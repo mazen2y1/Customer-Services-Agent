@@ -1,13 +1,15 @@
-from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage
 from langchain.agents import create_agent
 from tools import get_order , check_shipping , cancel_order , refund_order , create_ticket
-load_dotenv()
+import streamlit as st
+
+GOOGLE_API_KEY= st.secrets["GOOGLE_API_KEY"]
 
 model = ChatGoogleGenerativeAI(
     model="gemini-3.1-flash-lite",
-    temperature=0
+    temperature=0,
+    googgle_api_key=GOOGLE_API_KEY
 )
 system_prompt = """
 You are a customer support agent.
