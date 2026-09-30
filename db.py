@@ -6,10 +6,6 @@ from dotenv import load_dotenv
 ENV_PATH = Path(__file__).resolve().parent / ".env"
 load_dotenv(ENV_PATH)
 
-print("ENV PATH:", ENV_PATH)
-print("ENV FILE EXISTS:", ENV_PATH.exists())
-print("PASSWORD LOADED:", bool(os.getenv("DB_PASSWORD")))
-
 def get_connection():
     return mysql.connector.connect(
         host=os.getenv("DB_HOST", "localhost"),

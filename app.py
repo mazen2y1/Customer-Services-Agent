@@ -2,12 +2,13 @@ import streamlit as st
 from Agent import chat
 
 st.set_page_config(
-    page_title="Customer Services Agent",
-    page_icon="🤖",
-    layout="centered"
+    page_title="CSA DEMO",
+    page_icon=r"data/assistant.png",
+    layout="wide"
 )
 
 st.title("Customer Services Agent")
+st.markdown("https://github.com/mazen2y1/Customer-Services-Agent")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
