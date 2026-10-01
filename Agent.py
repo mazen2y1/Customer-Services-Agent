@@ -5,10 +5,9 @@ from tools import get_order , check_shipping , cancel_order , refund_order , cre
 import streamlit as st
 
 GOOGLE_API_KEY= st.secrets["GOOGLE_API_KEY"]
-MODEL = st.secrets["GOOGLE_MODEL_NAME"]
 
 model = ChatGoogleGenerativeAI(
-    model=MODEL,
+    model="gemini-3.1-flash-lite",
     temperature=0,
     google_api_key=GOOGLE_API_KEY
 )
