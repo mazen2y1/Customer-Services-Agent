@@ -1,13 +1,15 @@
 from supabase import create_client
-from dotenv import load_dotenv
 import streamlit as st
-load_dotenv()
+
 
 def init_connection():
     url = st.secrets["SUPABASE_URL"]
     key = st.secrets["SUPABASE_KEY"]
-    return create_client(url,key)
+    return create_client(url, key)
+
+
 supabase = init_connection()
+
 
 def fetch_order(order_id: str):
     response = (
@@ -19,12 +21,7 @@ def fetch_order(order_id: str):
         .execute()
     )
 
-    order = response.data
-
-    if order is None:
-        return None
-
-    return order
+    return response.data
 
 
 def update_order_status(order_id: str, status: str) -> bool:
