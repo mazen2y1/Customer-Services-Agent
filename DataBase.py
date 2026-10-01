@@ -1,15 +1,11 @@
 from supabase import create_client
 import streamlit as st
 
-
 def init_connection():
     url = st.secrets["SUPABASE_URL"]
     key = st.secrets["SUPABASE_KEY"]
-    return create_client(url, key)
-
-
+    return create_client(url,key)
 supabase = init_connection()
-
 
 def fetch_order(order_id: str):
     response = (
@@ -21,7 +17,12 @@ def fetch_order(order_id: str):
         .execute()
     )
 
-    return response.data
+    order = response.data
+
+    if order is None:
+        return None
+
+    return order
 
 
 def update_order_status(order_id: str, status: str) -> bool:
