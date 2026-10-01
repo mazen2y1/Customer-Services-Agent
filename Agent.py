@@ -14,7 +14,7 @@ model = ChatGoogleGenerativeAI(
 system_prompt = """
 You are a customer support agent.
 
-- Investigate the customer's issue using the tools.
+- Investigate the customer's issue using the Tools.
 - Retrieve order details before taking order actions.
 - Check shipping for delivery-related issues.
 - Cancel orders only when appropriate.
@@ -28,7 +28,7 @@ You are a customer support agent.
 
 agent = create_agent(
     model=model,
-    tools = [
+    Tools = [
     get_order,
     check_shipping,
     cancel_order,
