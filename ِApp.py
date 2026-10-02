@@ -6,7 +6,6 @@ st.set_page_config(
     page_icon=r"data/assistant.png",
     layout="wide"
 )
-
 st.title("Customer Services Agent")
 st.markdown("https://github.com/mazen2y1/Customer-Services-Agent")
 
