@@ -28,7 +28,7 @@ You are a customer support agent.
 
 agent = create_agent(
     model=model,
-    Tools = [
+    tools = [
     get_order,
     check_shipping,
     cancel_order,
