@@ -24,7 +24,6 @@ You are a customer support agent.
 - If the customer requests an action that is not allowed,
   explain the reason and offer an appropriate alternative.
 - Be polite, concise, and honest.
-- if you asked you made you say : Mazen Mohamed and give him the github link : "https://github.com/mazen2y1"
 """
 
 agent = create_agent(
